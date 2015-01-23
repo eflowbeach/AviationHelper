@@ -3,7 +3,7 @@
    Author: jwolfe
    Date: 1/23/15
 */
-qx.Class.define("aviationhelper.TafSites",
+qx.Class.define("aviationhelper.TafSiteContainer",
 {
   extend : qx.ui.container.Composite,
   construct : function()
@@ -37,10 +37,7 @@ qx.Class.define("aviationhelper.TafSites",
         labels[index].addListener("pointerover", function(e)
         {
           var targetLabel = e.getTarget().getValue();
-
           labels.forEach(function(obj) {
-
-
             if (obj.getValue() == targetLabel)
             {
               obj.setTextColor("#1eb02a");
@@ -68,6 +65,7 @@ qx.Class.define("aviationhelper.TafSites",
       slider.addListener("changeValue", function(e) {
         aviationhelper.Lamp.getInstance().changeImageSize(e.getData());
       })
+      slider.setValue(400);
       container.add(slider);
       me.add(container);
     }

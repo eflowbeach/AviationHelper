@@ -49,7 +49,8 @@ qx.Class.define("aviationhelper.Application",
         Below is your actual application code...
       -------------------------------------------------------------------------
       */
-// Initialize sites
+
+      // Initialize sites
       var sites = ["KCRW", "KHTS", "KPKB", "KCKB", "KEKN", "KBKW"];
       var dataStore = aviationhelper.JQx.dataStore.getInstance();
       dataStore.setSites(sites);
@@ -58,16 +59,15 @@ qx.Class.define("aviationhelper.Application",
       var mainContainer = new qx.ui.container.Composite(new qx.ui.layout.VBox());
 
       // Control container
-      var controlContainer = new aviationhelper.TafSites(sites).set( {
+      var controlContainer = new aviationhelper.TafSiteContainer(sites).set( {
         paddingLeft : 10
       });
 
-// Lamp Guidance
+      // Lamp Guidance
       var lampContainer = aviationhelper.Lamp.getInstance();
       mainContainer.add(controlContainer);
       mainContainer.add(lampContainer);
       this.getRoot().add(mainContainer);
-
     }
   }
 });

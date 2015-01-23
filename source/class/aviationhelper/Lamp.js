@@ -13,8 +13,8 @@ qx.Class.define("aviationhelper.Lamp",
     var me = this;
 
     // Set the widths of the scroll container
-          me.setWidth(qx.bom.Viewport.getWidth());
-          me.setMinHeight(qx.bom.Viewport.getHeight()-50);
+    me.setWidth(qx.bom.Viewport.getWidth());
+    me.setMinHeight(qx.bom.Viewport.getHeight() - 50);
 
     // Need this for scroll to work properly
     var mainContainer = new qx.ui.container.Composite(new qx.ui.layout.HBox());
@@ -69,13 +69,47 @@ qx.Class.define("aviationhelper.Lamp",
     lifrContainer.add(me.lifrCigImage);
     lifrContainer.add(me.lifrVisImage);
     probContainer.add(lifrContainer);
+
+    /*
+     TAF - get the taf from ADDS and then parse out the TAF portion
+     */
+    me.taf = new qx.ui.embed.Html('hi').set(
+    {
+      minHeight : 400,
+      paddingTop : 20
+    });
+    probContainer.add(me.taf);
+    me.req = new qx.io.request.Xhr("resource/aviationhelper/getTaf.php?site=KCRW");
+    me.req.addListener("success", function(e)
+    {
+      var response = e.getTarget().getResponse();
+      var print = false;
+      var taf = '<b>TAF:</b><br>';
+
+      // Parsing the TAF
+      response.split('\n').forEach(function(obj)
+      {
+        if (obj.indexOf('<PRE><font face="Monospace,Courier" size="+1">') !== -1) {
+          print = true;
+        }
+        if (obj.indexOf('</font></PRE>') !== -1) {
+          print = false;
+        }
+        if (print) {
+          taf += obj + '\n';
+        }
+      })
+      me.taf.setHtml(taf);
+    }, this);
+
+    // Send request
+    me.req.send();
   },
   members :
   {
-
-  /**
-  Change the site
-  */
+    /**
+    Change the site
+    */
     changeSite : function(site)
     {
       var me = this;
@@ -86,6 +120,8 @@ qx.Class.define("aviationhelper.Lamp",
       me.lifrCigImage.setSource("http://www.nws.noaa.gov/mdl/gfslamp/makeuncertplot.php?&sta=" + site + "&elm=cig&flightcat=LIFR");
       me.lifrVisImage.setSource("http://www.nws.noaa.gov/mdl/gfslamp/makeuncertplot.php?&sta=" + site + "&elm=vis&flightcat=LIFR");
       me.meteoImage.setSource("http://www.nws.noaa.gov/mdl/gfslamp/meteo.php?BackHour=3&TempBox=N&DewBox=N&SkyBox=N&WindSpdBox=N&WindDirBox=N&WindGustBox=N&CigBox=Y&VisBox=Y&ObvBox=N&PtypeBox=Y&PopoBox=Y&LightningBox=Y&ConvBox=Y&sta=" + site);
+      me.req.setUrl("resource/aviationhelper/getTaf.php?site=" + site);
+      me.req.send();
     },
 
     /**
