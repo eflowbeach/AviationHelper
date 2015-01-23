@@ -79,13 +79,13 @@ qx.Class.define("aviationhelper.Lamp",
       paddingTop : 20
     });
     probContainer.add(me.taf);
-    me.req = new qx.io.request.Xhr("resource/aviationhelper/getTaf.php?site=KCRW");
+    me.req = new qx.io.request.Xhr("resource/aviationhelper/getTaf.php?site="+sites[0]);
     me.req.addListener("success", function(e)
     {
       var response = e.getTarget().getResponse();
       var print = false;
       var taf = '<b>TAF:</b><br>';
-
+                       me.lines = 0;
       // Parsing the TAF
       response.split('\n').forEach(function(obj)
       {
@@ -97,13 +97,34 @@ qx.Class.define("aviationhelper.Lamp",
         }
         if (print) {
           taf += obj + '\n';
+          me.lines++;
         }
       })
       me.taf.setHtml(taf);
+      me.taf.setMinHeight(me.lines*40);
     }, this);
 
     // Send request
     me.req.send();
+
+
+
+    // Radar Image
+    me.radar = new qx.ui.basic.Image("http://radar.weather.gov/lite/NCR/"+radarId+"_loop.gif").set( {
+          scale : true ,
+          width:300,
+          height:300
+        });
+    probContainer.add(me.radar);
+
+      var timer = new qx.event.Timer(3600 * 3 * 1000);
+        timer.addListener("interval", function(e)
+        {
+         me.radar.setSource("http://radar.weather.gov/lite/NCR/"+radarId+"_loop.gif" + parseInt(Math.random() * 1000));
+        });
+        timer.start();
+
+
   },
   members :
   {

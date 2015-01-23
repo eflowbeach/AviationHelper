@@ -50,8 +50,19 @@ qx.Class.define("aviationhelper.Application",
       -------------------------------------------------------------------------
       */
 
+
       // Initialize sites
-      var sites = ["KCRW", "KHTS", "KPKB", "KCKB", "KEKN", "KBKW"];
+      if(sites==="undefined"||sites==""){
+        sites = ["KCRW", "KHTS", "KPKB", "KCKB", "KEKN", "KBKW"];
+      }else{
+      sites = sites.split('|');
+      }
+
+      if(radarId==="undefined"|| radarId==""){
+      radarId = "RLX";
+      }
+
+
       var dataStore = aviationhelper.JQx.dataStore.getInstance();
       dataStore.setSites(sites);
 
