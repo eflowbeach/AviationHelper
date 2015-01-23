@@ -49,14 +49,25 @@ qx.Class.define("aviationhelper.Application",
         Below is your actual application code...
       -------------------------------------------------------------------------
       */
+// Initialize sites
+      var sites = ["KCRW", "KHTS", "KPKB", "KCKB", "KEKN", "KBKW"];
+      var dataStore = aviationhelper.JQx.dataStore.getInstance();
+      dataStore.setSites(sites);
 
-var sites = ["KCRW", "KPKB"];
+      // The main container
+      var mainContainer = new qx.ui.container.Composite(new qx.ui.layout.VBox());
 
-      // Create a button
-      var lampContainer = new aviationhelper.Lamp(sites);
+      // Control container
+      var controlContainer = new aviationhelper.TafSites(sites).set( {
+        paddingLeft : 10
+      });
 
-      // Add button to document at fixed coordinates
-      this.getRoot().add(lampContainer);
+// Lamp Guidance
+      var lampContainer = aviationhelper.Lamp.getInstance();
+      mainContainer.add(controlContainer);
+      mainContainer.add(lampContainer);
+      this.getRoot().add(mainContainer);
+
     }
   }
 });
