@@ -7,6 +7,11 @@ qx.Class.define("aviationhelper.Lamp",
 {
   extend : qx.ui.container.Scroll,
   type : "singleton",
+  properties : {
+    site : {
+      init : null
+    }
+  },
   construct : function()
   {
     this.base(arguments);
@@ -79,13 +84,14 @@ qx.Class.define("aviationhelper.Lamp",
       paddingTop : 20
     });
     probContainer.add(me.taf);
-    me.req = new qx.io.request.Xhr("resource/aviationhelper/getTaf.php?site="+sites[0]);
+    me.req = new qx.io.request.Xhr("resource/aviationhelper/getTaf.php?site=" + sites[0]);
     me.req.addListener("success", function(e)
     {
       var response = e.getTarget().getResponse();
       var print = false;
       var taf = '<b>TAF:</b><br>';
-                       me.lines = 0;
+      me.lines = 0;
+
       // Parsing the TAF
       response.split('\n').forEach(function(obj)
       {
@@ -95,54 +101,59 @@ qx.Class.define("aviationhelper.Lamp",
         if (obj.indexOf('</font></PRE>') !== -1) {
           print = false;
         }
-        if (print) {
+        if (print)
+        {
           taf += obj + '\n';
           me.lines++;
         }
       })
       me.taf.setHtml(taf);
-      me.taf.setMinHeight(me.lines*40);
+      me.taf.setMinHeight(me.lines * 40);
     }, this);
 
     // Send request
     me.req.send();
 
-
-
     // Radar Image
-    me.radar = new qx.ui.basic.Image("http://radar.weather.gov/lite/NCR/"+radarId+"_loop.gif").set( {
-          scale : true ,
-          width:300,
-          height:300
-        });
+    me.radar = new qx.ui.basic.Image("http://radar.weather.gov/lite/NCR/" + radarId + "_loop.gif").set(
+    {
+      scale : true,
+      width : 300,
+      height : 300
+    });
     probContainer.add(me.radar);
-
-      var timer = new qx.event.Timer(3600 * 3 * 1000);
-        timer.addListener("interval", function(e)
-        {
-         me.radar.setSource("http://radar.weather.gov/lite/NCR/"+radarId+"_loop.gif" + parseInt(Math.random() * 1000));
-        });
-        timer.start();
-
-
+    var timer = new qx.event.Timer(3600 * 3 * 1000);
+    timer.addListener("interval", function(e)
+    {
+      me.radar.setSource("http://radar.weather.gov/lite/NCR/" + radarId + "_loop.gif?" + parseInt(Math.random() * 1000));
+      me.changeSite(me.getSite(), true);
+    });
+    timer.start();
   },
   members :
   {
     /**
     Change the site
     */
-    changeSite : function(site)
+    changeSite : function(site, force)
     {
       var me = this;
-      me.mvfrCigImage.setSource("http://www.nws.noaa.gov/mdl/gfslamp/makeuncertplot.php?&sta=" + site + "&elm=cig&flightcat=MVFR");
-      me.mvfrVisImage.setSource("http://www.nws.noaa.gov/mdl/gfslamp/makeuncertplot.php?&sta=" + site + "&elm=vis&flightcat=MVFR");
-      me.ifrCigImage.setSource("http://www.nws.noaa.gov/mdl/gfslamp/makeuncertplot.php?&sta=" + site + "&elm=cig&flightcat=IFR");
-      me.ifrVisImage.setSource("http://www.nws.noaa.gov/mdl/gfslamp/makeuncertplot.php?&sta=" + site + "&elm=vis&flightcat=IFR");
-      me.lifrCigImage.setSource("http://www.nws.noaa.gov/mdl/gfslamp/makeuncertplot.php?&sta=" + site + "&elm=cig&flightcat=LIFR");
-      me.lifrVisImage.setSource("http://www.nws.noaa.gov/mdl/gfslamp/makeuncertplot.php?&sta=" + site + "&elm=vis&flightcat=LIFR");
-      me.meteoImage.setSource("http://www.nws.noaa.gov/mdl/gfslamp/meteo.php?BackHour=3&TempBox=N&DewBox=N&SkyBox=N&WindSpdBox=N&WindDirBox=N&WindGustBox=N&CigBox=Y&VisBox=Y&ObvBox=N&PtypeBox=Y&PopoBox=Y&LightningBox=Y&ConvBox=Y&sta=" + site);
+      var rand = '';
+      if (typeof (force) !== "undefined")
+      {
+        rand = "&rand=" + parseInt(Math.random() * 1000);
+        site = me.getSite();
+      }
+      me.mvfrCigImage.setSource("http://www.nws.noaa.gov/mdl/gfslamp/makeuncertplot.php?&sta=" + site + "&elm=cig&flightcat=MVFR" + rand);
+      me.mvfrVisImage.setSource("http://www.nws.noaa.gov/mdl/gfslamp/makeuncertplot.php?&sta=" + site + "&elm=vis&flightcat=MVFR" + rand);
+      me.ifrCigImage.setSource("http://www.nws.noaa.gov/mdl/gfslamp/makeuncertplot.php?&sta=" + site + "&elm=cig&flightcat=IFR" + rand);
+      me.ifrVisImage.setSource("http://www.nws.noaa.gov/mdl/gfslamp/makeuncertplot.php?&sta=" + site + "&elm=vis&flightcat=IFR" + rand);
+      me.lifrCigImage.setSource("http://www.nws.noaa.gov/mdl/gfslamp/makeuncertplot.php?&sta=" + site + "&elm=cig&flightcat=LIFR" + rand);
+      me.lifrVisImage.setSource("http://www.nws.noaa.gov/mdl/gfslamp/makeuncertplot.php?&sta=" + site + "&elm=vis&flightcat=LIFR" + rand);
+      me.meteoImage.setSource("http://www.nws.noaa.gov/mdl/gfslamp/meteo.php?BackHour=3&TempBox=N&DewBox=N&SkyBox=N&WindSpdBox=N&WindDirBox=N&WindGustBox=N&CigBox=Y&VisBox=Y&ObvBox=N&PtypeBox=Y&PopoBox=Y&LightningBox=Y&ConvBox=Y&sta=" + site + rand);
       me.req.setUrl("resource/aviationhelper/getTaf.php?site=" + site);
       me.req.send();
+      me.setSite(site);
     },
 
     /**
@@ -165,6 +176,12 @@ qx.Class.define("aviationhelper.Lamp",
       me.ifrVisImage.setHeight(height);
       me.lifrCigImage.setHeight(height);
       me.lifrVisImage.setHeight(height);
+
+      // Meteograms
+
+      //      me.meteoImage.setWidth(parseInt(width * 2));
+
+      //      me.meteoImage.setHeight(parseInt(height * 6.5));
     }
   }
 });

@@ -6,7 +6,8 @@
   <title>AviationHelper</title>
   <script type="text/javascript" src="script/aviationhelper.js"></script>
 </head>
-<body></body>
+<body>
+</body>
 
  <!-- Get Sites -->
       <script type="text/javascript">

@@ -26,11 +26,12 @@ qx.Class.define("aviationhelper.TafSiteContainer",
       var labels = [];
       sites.forEach(function(obj, index)
       {
-        labels[index] = new qx.ui.basic.Label(obj).set( {
+        labels[index] = new qx.ui.basic.Label(obj).set(
+        {
           font : new qx.bom.Font(16).set( {
             bold : true
           }),
-          textColor: (index==0)? "#1eb02a": "#000000"
+          textColor : (index == 0) ? "#1eb02a" : "#000000"
         });
         container.add(labels[index]);
 
