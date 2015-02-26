@@ -78,10 +78,16 @@ qx.Class.define("aviationhelper.Lamp",
     /*
      TAF - get the taf from ADDS and then parse out the TAF portion
      */
+    me.metar = new qx.ui.embed.Html('hi').set(
+    {
+      minHeight : 200,
+      paddingTop : 20
+    });
+    probContainer.add(me.metar);
     me.taf = new qx.ui.embed.Html('hi').set(
     {
       minHeight : 400,
-      paddingTop : 20
+      paddingTop : 0
     });
     probContainer.add(me.taf);
     me.req = new qx.io.request.Xhr("resource/aviationhelper/getTaf.php?site=" + sites[0]);
@@ -89,7 +95,7 @@ qx.Class.define("aviationhelper.Lamp",
     {
       var response = e.getTarget().getResponse();
       var print = false;
-      var taf = '<b>TAF:</b><br>';
+      var taf = '<b>TAF:</b>';
       me.lines = 0;
 
       // Parsing the TAF
@@ -113,6 +119,36 @@ qx.Class.define("aviationhelper.Lamp",
 
     // Send request
     me.req.send();
+    me.reqMetar = new qx.io.request.Xhr("resource/aviationhelper/getMetar.php?site=" + sites[0]);
+    me.reqMetar.addListener("success", function(e)
+    {
+      var response = e.getTarget().getResponse();
+      var print = false;
+      var metar = '<b>METAR:</b><br>';
+      me.metarLines = 0;
+
+      // Parsing the metar
+      response.split('\n').forEach(function(obj)
+      {
+        if (obj.indexOf('<FONT FACE="Monospace,Courier">') !== -1) {
+          print = true;
+        }
+        if (print)
+        {
+          metar += obj + '\n';
+          me.metarLines++;
+        }
+        if (obj.indexOf('</FONT><BR>') !== -1) {
+          print = false;
+        }
+      })
+      console.log(metar);
+      me.metar.setHtml(metar);
+      me.metar.setMinHeight(me.metarLines * 40);
+    }, this);
+
+    // Send request
+    me.reqMetar.send();
 
     // Radar Image
     me.radar = new qx.ui.basic.Image("http://radar.weather.gov/lite/NCR/" + radarId + "_loop.gif").set(
@@ -153,6 +189,8 @@ qx.Class.define("aviationhelper.Lamp",
       me.meteoImage.setSource("http://www.nws.noaa.gov/mdl/gfslamp/meteo.php?BackHour=3&TempBox=N&DewBox=N&SkyBox=N&WindSpdBox=N&WindDirBox=N&WindGustBox=N&CigBox=Y&VisBox=Y&ObvBox=N&PtypeBox=Y&PopoBox=Y&LightningBox=Y&ConvBox=Y&sta=" + site + rand);
       me.req.setUrl("resource/aviationhelper/getTaf.php?site=" + site);
       me.req.send();
+      me.reqMetar.setUrl("resource/aviationhelper/getMetar.php?site=" + site);
+      me.reqMetar.send();
       me.setSite(site);
     },
 

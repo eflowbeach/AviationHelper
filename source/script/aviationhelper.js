@@ -20,7 +20,7 @@ qx.$$g = {}
 
 qx.$$loader = {
   parts : {"boot":[0]},
-  packages : {"0":{"uris":["__out__:aviationhelper.97304e7c5d2c.js","aviationhelper:aviationhelper/Application.js","__out__:aviationhelper.d23d0554b50d.js","aviationhelper:aviationhelper/JQx/dataStore.js","aviationhelper:aviationhelper/TafSiteContainer.js","__out__:aviationhelper.75b2638a3c7a.js","aviationhelper:aviationhelper/Lamp.js","__out__:aviationhelper.495ce1d47235.js","aviationhelper:aviationhelper/theme/Appearance.js","__out__:aviationhelper.38c4a3d0a696.js","aviationhelper:aviationhelper/theme/Font.js","__out__:aviationhelper.54e2816fd898.js","aviationhelper:aviationhelper/theme/Color.js","__out__:aviationhelper.870138203df5.js","aviationhelper:aviationhelper/theme/Decoration.js","aviationhelper:aviationhelper/theme/Theme.js"]}},
+  packages : {"0":{"uris":["__out__:aviationhelper.6637602063cd.js","aviationhelper:aviationhelper/Application.js","__out__:aviationhelper.d23d0554b50d.js","aviationhelper:aviationhelper/JQx/dataStore.js","aviationhelper:aviationhelper/TafSiteContainer.js","__out__:aviationhelper.75b2638a3c7a.js","aviationhelper:aviationhelper/Lamp.js","__out__:aviationhelper.495ce1d47235.js","aviationhelper:aviationhelper/theme/Appearance.js","__out__:aviationhelper.38c4a3d0a696.js","aviationhelper:aviationhelper/theme/Font.js","__out__:aviationhelper.54e2816fd898.js","aviationhelper:aviationhelper/theme/Color.js","__out__:aviationhelper.870138203df5.js","aviationhelper:aviationhelper/theme/Decoration.js","aviationhelper:aviationhelper/theme/Theme.js"]}},
   urisBefore : [],
   cssBefore : [],
   boot : "boot",
